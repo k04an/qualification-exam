@@ -72,7 +72,4 @@ sequelize.models.Route.hasMany(sequelize.models.Sale)
 sequelize.models.Sale.belongsTo(sequelize.models.Route)
 
 module.exports = sequelize.models
-
-sequelize.sync({force: true})
-    .then(() => console.log('DB has been synced'))
-    .catch((e) => console.log(e))
+module.exports.sequelize = sequelize

@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node web",
-    "dev": "nodemon web"
+    "dev": "nodemon web",
+    "db:sync": "node sync-db"
   },
   "keywords": [],
   "author": "",
