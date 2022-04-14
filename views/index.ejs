@@ -1,0 +1,32 @@
+<%- include('./parts/header')%>
+
+<main class="container py-5">
+    <div class="row">
+        <!--Место под таблицы-->
+        <div class="col-8 py-4">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <% for (const name of propNames) { %>
+                            <th><%=name%></th>
+                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (const row of data) { %>
+                        <tr>
+                            <% for (const prop of dataPropNames) { %>
+                                <td><%=row[prop]%></td>
+                            <% } %>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!--Место под фильтры-->
+        <div class="col-4"></div>
+    </div>
+</main>
+
+<%- include('./parts/footer')%>
