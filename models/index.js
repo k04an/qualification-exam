@@ -11,7 +11,7 @@ require('./Plane')(sequelize)
 require('./PlaneModel')(sequelize)
 require('./City')(sequelize)
 require('./Country')(sequelize)
-require('./Aeroport')(sequelize)
+require('./Airport')(sequelize)
 require('./Position')(sequelize)
 require('./Employee')(sequelize)
 require('./Route')(sequelize)
@@ -23,37 +23,37 @@ require('./Sale')(sequelize)
 sequelize.models.Plane.belongsTo(sequelize.models.PlaneModel)
 sequelize.models.PlaneModel.hasMany(sequelize.models.Plane)
 
-sequelize.models.Aeroport.belongsTo(sequelize.models.City)
-sequelize.models.City.hasMany(sequelize.models.Aeroport)
+sequelize.models.Airport.belongsTo(sequelize.models.City)
+sequelize.models.City.hasMany(sequelize.models.Airport)
 
-sequelize.models.Aeroport.belongsTo(sequelize.models.Country)
-sequelize.models.Country.hasMany(sequelize.models.Aeroport)
+sequelize.models.City.belongsTo(sequelize.models.Country)
+sequelize.models.Country.hasMany(sequelize.models.City)
 
 sequelize.models.Employee.belongsTo(sequelize.models.Position)
 sequelize.models.Position.hasMany(sequelize.models.Employee)
 
-sequelize.models.Route.belongsTo(sequelize.models.Aeroport, {
-    foreignKey: 'fromAeroportId',
-    as: 'FromAeroportId'
+sequelize.models.Route.belongsTo(sequelize.models.Airport, {
+    foreignKey: 'fromAirportId',
+    as: 'FromAirportId'
 })
-sequelize.models.Aeroport.hasMany(sequelize.models.Route, {
-    foreignKey: 'fromAeroportId'
-})
-
-sequelize.models.Route.belongsTo(sequelize.models.Aeroport, {
-    foreignKey: 'toAeroportId',
-    as: 'ToAeroportId'
-})
-sequelize.models.Aeroport.hasMany(sequelize.models.Route, {
-    foreignKey: 'toAeroportId'
+sequelize.models.Airport.hasMany(sequelize.models.Route, {
+    foreignKey: 'fromAirportId'
 })
 
-sequelize.models.Route.belongsTo(sequelize.models.Aeroport, {
-    foreignKey: 'transitAeroportId',
-    as: 'TransitAeroportId'
+sequelize.models.Route.belongsTo(sequelize.models.Airport, {
+    foreignKey: 'toAirportId',
+    as: 'ToAirportId'
 })
-sequelize.models.Aeroport.hasMany(sequelize.models.Route, {
-    foreignKey: 'transitAeroportId'
+sequelize.models.Airport.hasMany(sequelize.models.Route, {
+    foreignKey: 'toAirportId'
+})
+
+sequelize.models.Route.belongsTo(sequelize.models.Airport, {
+    foreignKey: 'transitAirportId',
+    as: 'TransitAirportId'
+})
+sequelize.models.Airport.hasMany(sequelize.models.Route, {
+    foreignKey: 'transitAirportId'
 })
 
 sequelize.models.Route.belongsTo(sequelize.models.Plane)

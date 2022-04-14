@@ -10,8 +10,6 @@ module.exports.index = async (req, res) => {
         return employee.dataValues
     })
 
-    console.log(employees)
-
     res.render('index', {
         pageTitle: 'Главная',
         data: employees,

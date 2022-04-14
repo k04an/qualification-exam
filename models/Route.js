@@ -2,15 +2,15 @@ const { DataTypes } = require('sequelize')
 
 module.exports = async (sequelize) => {
     return sequelize.define('Route', {
-        fromAeroportId: {
+        fromAirportId: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        toAeroportId: {
+        toAirportId: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        transitAeroportId: DataTypes.INTEGER,
+        transitAirportId: DataTypes.INTEGER,
         ticketCost: {
             type: DataTypes.FLOAT,
             allowNull: false
