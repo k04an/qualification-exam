@@ -34,7 +34,7 @@ sequelize.models.Position.hasMany(sequelize.models.Employee)
 
 sequelize.models.Route.belongsTo(sequelize.models.Airport, {
     foreignKey: 'fromAirportId',
-    as: 'FromAirportId'
+    as: 'FromAirport'
 })
 sequelize.models.Airport.hasMany(sequelize.models.Route, {
     foreignKey: 'fromAirportId'
@@ -42,7 +42,7 @@ sequelize.models.Airport.hasMany(sequelize.models.Route, {
 
 sequelize.models.Route.belongsTo(sequelize.models.Airport, {
     foreignKey: 'toAirportId',
-    as: 'ToAirportId'
+    as: 'ToAirport'
 })
 sequelize.models.Airport.hasMany(sequelize.models.Route, {
     foreignKey: 'toAirportId'
@@ -50,7 +50,7 @@ sequelize.models.Airport.hasMany(sequelize.models.Route, {
 
 sequelize.models.Route.belongsTo(sequelize.models.Airport, {
     foreignKey: 'transitAirportId',
-    as: 'TransitAirportId'
+    as: 'TransitAirport'
 })
 sequelize.models.Airport.hasMany(sequelize.models.Route, {
     foreignKey: 'transitAirportId'

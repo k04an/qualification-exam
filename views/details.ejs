@@ -1,0 +1,141 @@
+<%- include('./parts/header') %>
+<% let dataPropNames = data._options.attributes %>
+<main class="container py-5">
+    <div class="row">
+        <!--Колонка под поля модели-->
+        <div class="col">
+            <form action="/<%= data.constructor.name %>/update" class="d-flex flex-column" method="post"
+                  enctype="application/x-www-form-urlencoded">
+                <!--Генерирум несвязанные поля модели-->
+                <% for (const [index, prop] of dataPropNames.entries()) { %>
+                    <div class="form-floating mb-3">
+                        <input name="<%= prop %>" type="text" class="form-control" id="<%= prop %>"
+                               placeholder="<%= propNames[index] %>"
+                               value="<%= data[dataPropNames[index]] %>"
+                        <% if (prop == 'id') { %> readonly
+                                <% } %>
+                        >
+                        <label for="<%= prop %>"><%= propNames[index] %></label>
+                    </div>
+                <% } %>
+                <!--Генерирум свзязанные поля модели со связью belongsTo-->
+                <% for (const [index, model] of belongsTo.entries()) { %>
+                <div class="input-group mb-3">
+                    <div class="form-floating w-100">
+                        <select name="<%= model.model.constructor.name %>Id" id="<%= model.model.constructor.name %>"
+                                class="form-select form-control">
+                            <option selected value="null">
+                                <% for (const prop of model.model._options.attributes) { %>
+                                <%= model.model[prop] %>
+                                <% } %>
+                            </option>
+                            <% for (const optionModel of model.optionList) { %>
+                                <% for (const prop of model.model._options.attributes) { %>
+                                    <% if (optionModel[prop] != model.model[prop]) { %>
+                                    <option value="<%= optionModel.id %>">
+                                        <%= optionModel[prop] %>
+                                    </option>
+                                    <% } %>
+                                <% } %>
+                            <% } %>
+                        </select>
+                        <label for="<%= model.model.constructor.name %>"><%= model.name %></label>
+                    </div>
+                </div>
+                <% } %>
+                <div class="d-flex justify-content-end">
+                    <a href="/<%= data.constructor.name %>/delete?id=<%= data.id %>" class="me-3">
+                        <div class="btn btn-danger">Удалите</div>
+                    </a>
+                    <button type="submit" class="btn btn-secondary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+
+        <!--Колонка под связанные таблицы-->
+        <div class="col">
+            <% for (const [index, relatedModel] of hasMany.entries()) { %>
+                <div class="d-flex">
+                    <h3><%= relatedModel.name %></h3>
+                    <a href="#" class="m-auto me-0" data-bs-toggle="modal" data-bs-target="#addModal">
+                        <i class="bi bi-plus-circle fs-3 text-success"></i>
+                    </a>
+
+                    <!--Модальное окно добавление-->
+                    <div class="modal fade" id="addModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Добавление записи</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/<%= relatedModel.model.name %>/create" name="<%= relatedModel.model.name %>" method="post" enctype="application/x-www-form-urlencoded">
+                                        <input type="hidden" name="<%= data.constructor.name %>Id"
+                                               value="<%= data.id %>">
+                                        <% for (const [index, prop] of relatedModel.fieldNames.entries()) { %>
+                                            <% if (Object.getOwnPropertyNames(relatedModel.model.rawAttributes)[index] != 'id') { %>
+                                                <div class="form-floating mb-3">
+                                                    <input placeholder="<%= prop %>" id="<%= prop %>" type="text" class="form-control"
+                                                           name="<%= Object.getOwnPropertyNames(relatedModel.model.rawAttributes)[index] %>">
+                                                    <label for="<%= prop %>"><%= relatedModel.fieldNames[index] %></label>
+                                                </div>
+                                            <% } %>
+                                        <% } %>
+                                        <% for (const belongedModel of relatedModel.belongsTo) { %>
+                                        <div class="form-group mb-3">
+                                            <div class="form-floating">
+                                                <select name="<%= belongedModel.model[0].constructor.name %>Id" id="<%= belongedModel.model[0].constructor.name %>"
+                                                        class="form-select form-control">
+                                                    <% for (const option of belongedModel.model) { %>
+                                                    <option value="<%= option.id %>">
+                                                        <% for (attr of option._options.attributes) { %>
+                                                        <%= option[attr] %>
+                                                        <% } %>
+                                                    </option>
+                                                    <% } %>
+                                                </select>
+                                                <label for="<%= belongedModel.model[0].constructor.name %>"><%=belongedModel.name%></label>
+                                            </div>
+                                        </div>
+                                        <% } %>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary m-auto me-0" for="<%= relatedModel.model.name %>">Добавить</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <table class="table table-striped mb-5 mt-3 sortable">
+                    <thead>
+                    <tr>
+                        <% for (const field of relatedModel.fieldNames) { %>
+                        <th><%= field %></th>
+                        <% } %>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% for (const [index, row] of relatedModel.data.entries()) { %>
+                        <tr>
+                            <% for (const [index, prop] of relatedModel.fieldNames.entries()) { %>
+                                <td><%= row[row._options.attributes[index]] %></td>
+                            <% } %>
+                            <td class="d-flex flex-row">
+                                <a class="me-3" href="/<%= row.constructor.name %>/details?id=<%= row.id %>"><i
+                                            class="bi bi-eye-fill text-dark"></i></a>
+                                <a href="/<%= row.constructor.name %>/delete?id=<%= row.id %>"><i
+                                            class="bi bi-trash-fill text-danger"></i></a>
+                            </td>
+                        </tr>
+                    <% } %>
+                    </tbody>
+                </table>
+            <% } %>
+        </div>
+    </div>
+</main>
+
+<%- include('./parts/footer') %>

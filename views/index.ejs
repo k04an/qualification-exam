@@ -1,10 +1,11 @@
 <%- include('./parts/header')%>
-
+<% let dataPropNames = data[0].dataValues ? Object.getOwnPropertyNames(data[0].dataValues) : null %>
 <main class="container py-5">
     <div class="row">
         <!--Место под таблицы-->
         <div class="col-8 py-4">
-            <table class="table table-striped">
+            <h2 class="ms-5"><%=tableTitle%></h2>
+            <table class="table table-striped sortable">
                 <thead>
                     <tr>
                         <% for (const name of propNames) { %>
@@ -18,6 +19,10 @@
                             <% for (const prop of dataPropNames) { %>
                                 <td><%=row[prop]%></td>
                             <% } %>
+                            <td class="d-flex flex-row">
+                                <a class="me-3" href="/<%=model.name%>/details?id=<%=row.id%>"><i class="bi bi-eye-fill text-dark"></i></a>
+                                <a href="/<%=model.name%>/delete?id=<%=row.id%>"><i class="bi bi-trash-fill text-danger"></i></a>
+                            </td>
                         </tr>
                     <% } %>
                 </tbody>
