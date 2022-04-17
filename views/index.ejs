@@ -4,7 +4,62 @@
     <div class="row">
         <!--Место под таблицы-->
         <div class="col-8 py-4">
-            <h2 class="ms-5"><%=tableTitle%></h2>
+            <div class="d-flex">
+                <h2 class="ms-5"><%=tableTitle%></h2>
+                <a href="#" class="m-auto me-0" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i class="bi bi-plus-circle fs-3 text-success"></i>
+                </a>
+
+                <div class="modal fade" id="addModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Добавление записи</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/<%= model.name %>/create" name="<%= model.name %>" method="post" enctype="application/x-www-form-urlencoded">
+                                    <input type="hidden" name="<%= data.constructor.name %>Id"
+                                           value="<%= data.id %>">
+                                    <% for (const [index, prop] of propNames.entries()) { %>
+                                        <% if (data[0]._options.attributes[index] !== 'id') { %>
+                                            <div class="form-floating mb-3">
+                                                <input placeholder="<%= prop %>" id="<%= prop %>" type="text" class="form-control"
+                                                       name="<%= data[0]._options.attributes[index] %>">
+                                                <label for="<%= prop %>"><%= propNames[index] %></label>
+                                            </div>
+                                        <% } %>
+                                    <% } %>
+                                    <% for (const belongedModel of belongsTo) { %>
+                                        <div class="form-group mb-3">
+                                            <div class="form-floating">
+                                                <select name="<%= belongedModel.customFieldName ? belongedModel.customFieldName : belongedModel.model[0].constructor.name %>Id" id="<%= belongedModel.model[0].constructor.name %>"
+                                                        class="form-select form-control">
+                                                    <option value="" selected></option>
+                                                    <% for (const option of belongedModel.model) { %>
+                                                        <option value="<%= option.id %>">
+                                                            <% for (attr of option._options.attributes) { %>
+                                                                <% if (belongedModel.fieldsToShow.indexOf(attr) !== -1) { %>
+                                                                    <%= option[attr] %>
+                                                                <% } %>
+                                                            <% } %>
+                                                        </option>
+                                                    <% } %>
+                                                </select>
+                                                <label for="<%= belongedModel.model[0].constructor.name %>"><%=belongedModel.name%></label>
+                                            </div>
+                                        </div>
+                                    <% } %>
+                                    <div class="d-flex justify-content-end">
+                                        <button type="submit" class="btn btn-primary m-auto me-0" for="<%= model.name %>">Добавить</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <table class="table table-striped sortable">
                 <thead>
                     <tr>

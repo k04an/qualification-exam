@@ -22,16 +22,19 @@
                 <% for (const [index, model] of belongsTo.entries()) { %>
                 <div class="input-group mb-3">
                     <div class="form-floating w-100">
-                        <select name="<%= model.model.constructor.name %>Id" id="<%= model.model.constructor.name %>"
+                        <select name="<%= model.customFieldName ? model.customFieldName : model.model.constructor.name %>Id"
+                                id="<%= model.customFieldName ? model.customFieldName : model.model.constructor.name  %>"
                                 class="form-select form-control">
                             <option selected value="null">
-                                <% for (const prop of model.model._options.attributes) { %>
-                                <%= model.model[prop] %>
+                                <% if (model.model !== null) { %>
+                                    <% for (const prop of model.model._options.attributes) { %>
+                                        <%= model.model[prop] %>
+                                    <% } %>
                                 <% } %>
                             </option>
                             <% for (const optionModel of model.optionList) { %>
-                                <% for (const prop of model.model._options.attributes) { %>
-                                    <% if (optionModel[prop] != model.model[prop]) { %>
+                                <% for (const prop of model.optionList[0]._options.attributes) { %>
+                                    <% if (optionModel[prop] != model.optionList[0][prop]) { %>
                                     <option value="<%= optionModel.id %>">
                                         <%= optionModel[prop] %>
                                     </option>
@@ -39,7 +42,7 @@
                                 <% } %>
                             <% } %>
                         </select>
-                        <label for="<%= model.model.constructor.name %>"><%= model.name %></label>
+                        <label for="<%= model.optionList[0].constructor.name %>"><%= model.name %></label>
                     </div>
                 </div>
                 <% } %>
@@ -91,7 +94,9 @@
                                                     <% for (const option of belongedModel.model) { %>
                                                     <option value="<%= option.id %>">
                                                         <% for (attr of option._options.attributes) { %>
-                                                        <%= option[attr] %>
+                                                            <% if (belongedModel.fieldsToShow.indexOf(attr) !== -1) { %>
+                                                                <%= option[attr] %>
+                                                            <% } %>
                                                         <% } %>
                                                     </option>
                                                     <% } %>

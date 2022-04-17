@@ -1,16 +1,16 @@
-const { Position, Crew, Employee} = require('../models')
+const { Crew, Position, Employee} = require('../models')
 
 module.exports.index = async (req, res) => {
-    let positions = await Position.findAll({
-        attributes: ['id', 'name', 'salary']
+    let crews = await Crew.findAll({
+        attributes: ['id']
     })
 
     res.render('index', {
-        pageTitle: 'Должности',
-        tableTitle: 'Должности',
-        model: Position,
-        data: positions,
-        propNames: ['Код', 'Наименование', 'Оклад'],
+        pageTitle: 'Экипажи',
+        tableTitle: 'Экипажи',
+        model: Crew,
+        data: crews,
+        propNames: ['Номер экипажа'],
         belongsTo: []
     })
 }
@@ -21,39 +21,39 @@ module.exports.details = async (req, res) => {
         return
     }
 
-    let position
+    let crew
     try {
-        position = await Position.findOne({
+        crew = await Crew.findOne({
             where: { id: req.query.id },
-            attributes: ['id', 'name', 'salary']
+            attributes: ['id']
         })
     } catch (e) {
-        res.redirect('/position')
+        res.redirect('/crew')
         return
     }
 
-    let positionFullModel = await Position.findOne({where: { id: req.query.id }});
+    let crewFullModel = await Crew.findOne({where: { id: req.query.id }});
 
-    if (!position) {
-        res.redirect('/position')
+    if (!crew) {
+        res.redirect('/crew')
         return
     }
 
     res.render('details', {
         pageTitle: 'Подробно',
-        data: position,
-        propNames: ['Код', 'Наименование', 'Оклад'],
+        data: crew,
+        propNames: ['Номер экипажа'],
         hasMany: [
             {
-                data: await positionFullModel.getEmployees(),
+                data: await crewFullModel.getEmployees(),
                 model: Employee,
                 name: 'Сотрудники',
                 fieldNames: ['Код', 'Фамилия', 'Имя', 'Отчество', 'Дата рождения', 'Номер телефона', 'Серия паспорта', 'Номер паспорта'],
                 belongsTo: [
                     {
-                        model: await Crew.findAll({attributes: ['id']}),
-                        name: 'Экипаж',
-                        fieldsToShow: ['id']
+                        model: await Position.findAll({attributes: ['id', 'name']}),
+                        name: 'Должность',
+                        fieldsToShow: ['name']
                     }
                 ]
             }
@@ -64,18 +64,18 @@ module.exports.details = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     try {
-        let position = await Position.findOne({where: { id: req.body.id }})
+        let crew = await Crew.findOne({where: { id: req.body.id }})
 
-        if (!position) {
+        if (!crew) {
             res.status(500).send('Requested record not found')
             return
         }
 
-        for (const prop of position._options.attributes) {
-            if (Number(req.body[prop])) position[prop] = Number(req.body[prop])
-            else if (req.body[prop] !== 'null') position[prop] = req.body[prop]
+        for (const prop of crew._options.attributes) {
+            if (Number(req.body[prop])) crew[prop] = Number(req.body[prop])
+            else if (req.body[prop] !== 'null') crew[prop] = req.body[prop]
         }
-        await position.save()
+        await crew.save()
         res.redirect('back')
     } catch (e) {
         res.status(500).send(e.message)
@@ -89,7 +89,7 @@ module.exports.delete = async (req, res) => {
     }
 
     try {
-        await Position.destroy({
+        await Crew.destroy({
             where: { id: req.query.id }
         })
         res.redirect('back')
@@ -101,11 +101,11 @@ module.exports.delete = async (req, res) => {
 
 module.exports.create = async (req, res) => {
     try {
-        let position = Position.build()
+        let crew = Crew.build()
         for (const prop of Object.getOwnPropertyNames(req.body)) {
-            position[prop] = req.body[prop]
+            crew[prop] = req.body[prop]
         }
-        await position.save()
+        await crew.save()
         res.redirect('back')
     } catch (e) {
         res.status(500).send(e.message)

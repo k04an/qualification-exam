@@ -1,28 +1,17 @@
-const { Employee, Position, Crew, sequelize} = require('../models')
+const { Customer, Sale, Route } = require('../models')
 
 module.exports.index = async (req, res) => {
-    let employees = await Employee.findAll({
+    let customers = await Customer.findAll({
         attributes: ['id', 'lastname', 'firstname', 'middlename', 'birthday', 'telephone', 'passportSerial', 'passportNumber']
     })
 
     res.render('index.ejs', {
         pageTitle: 'Сотрудники',
         tableTitle: 'Сотрудники',
-        model: Employee,
-        data: employees,
+        model: Customer,
+        data: customers,
         propNames: ['Код', 'Фамилия', 'Имя', 'Отчество', 'Дата рождения', 'Номер телефона', 'Серия паспорта', 'Номер паспорта'],
-        belongsTo: [
-            {
-                model: await Position.findAll({attributes: ['id', 'name']}),
-                name: 'Должность',
-                fieldsToShow: ['name']
-            },
-            {
-                model: await Crew.findAll({attributes: ['id']}),
-                name: 'Экипаж',
-                fieldsToShow: ['id']
-            }
-        ]
+        belongsTo: []
     })
 }
 
@@ -32,58 +21,63 @@ module.exports.details = async (req, res) => {
         return
     }
 
-    let employee
+    let customer
     try {
-        employee = await Employee.findOne({
+        customer = await Customer.findOne({
             where: { id: req.query.id },
             attributes: ['id', 'lastname', 'firstname', 'middlename', 'birthday', 'telephone', 'passportSerial', 'passportNumber']
         })
     } catch (e) {
-        res.redirect('/employee')
+        res.redirect('/customer')
         return
     }
 
-    let employeeFullModel = await Employee.findOne({where: { id: req.query.id }});
+    let customerFullModel = await Customer.findOne({where: { id: req.query.id }});
 
-    if (!employee) {
-        res.redirect('/employee')
+    if (!customer) {
+        res.redirect('/customer')
         return
     }
 
     res.render('details', {
         pageTitle: 'Подробно',
-        data: employee,
+        data: customer,
         propNames: ['Код', 'Фамилия', 'Имя', 'Отчество', 'Дата рождения', 'Номер телефона', 'Серия паспорта', 'Номер паспорта'],
-        hasMany: [],
-        belongsTo: [
+        hasMany: [
             {
-                model: await employeeFullModel.getPosition({attributes: ['name']}),
-                optionList: await Position.findAll(),
-                name: 'Должность'
-            },
-            {
-                model: await employeeFullModel.getCrew({attributes: ['id']}),
-                optionList: await Crew.findAll(),
-                name: 'Экипаж'
+                data: await customerFullModel.getSales({attributes: ['id', 'sitNumber']}),
+                model: Sale,
+                name: 'Покупки',
+                fieldNames: ['Код', 'Номер места'],
+                belongsTo: [
+                    {
+                        model: await Route.findAll({
+                            attributes: ['id', 'fromAirportId', 'toAirportId']
+                        }),
+                        name: 'Маршрут',
+                        fieldsToShow: ['fromAirportId', 'toAirportId']
+                    }
+                ]
             }
-        ]
+        ],
+        belongsTo: []
     })
 }
 
 module.exports.update = async (req, res) => {
     try {
-        let employee = await Employee.findOne({where: { id: req.body.id }})
+        let customer = await Customer.findOne({where: { id: req.body.id }})
 
-        if (!employee) {
+        if (!customer) {
             res.status(500).send('Requested record not found')
             return
         }
 
-        for (const prop of employee._options.attributes) {
-            if (Number(req.body[prop])) employee[prop] = Number(req.body[prop])
-            else if (req.body[prop] !== 'null') employee[prop] = req.body[prop]
+        for (const prop of customer._options.attributes) {
+            if (Number(req.body[prop])) customer[prop] = Number(req.body[prop])
+            else if (req.body[prop] !== 'null') customer[prop] = req.body[prop]
         }
-        await employee.save()
+        await customer.save()
         res.redirect('back')
     } catch (e) {
         res.status(500).send(e.message)
@@ -97,7 +91,7 @@ module.exports.delete = async (req, res) => {
     }
 
     try {
-        await Employee.destroy({
+        await Customer.destroy({
             where: { id: req.query.id }
         })
         res.redirect('back')
@@ -109,11 +103,11 @@ module.exports.delete = async (req, res) => {
 
 module.exports.create = async (req, res) => {
     try {
-        let employee = Employee.build()
+        let customer = Customer.build()
         for (const prop of Object.getOwnPropertyNames(req.body)) {
-            employee[prop] = req.body[prop]
+            customer[prop] = req.body[prop]
         }
-        await employee.save()
+        await customer.save()
         res.redirect('back')
     } catch (e) {
         res.status(500).send(e.message)
