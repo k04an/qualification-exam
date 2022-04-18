@@ -33,13 +33,13 @@
                                 <% } %>
                             </option>
                             <% for (const optionModel of model.optionList) { %>
-                                <% for (const prop of model.optionList[0]._options.attributes) { %>
-                                    <% if (optionModel[prop] != model.optionList[0][prop]) { %>
-                                    <option value="<%= optionModel.id %>">
-                                        <%= optionModel[prop] %>
-                                    </option>
+                                <option value="<%= optionModel.id %>">
+                                    <% for (const prop of model.optionList[0]._options.attributes) { %>
+                                        <% if (model.fieldsToShow.indexOf(prop) !== -1) { %>
+                                            <%= optionModel[prop] %>
+                                        <% } %>
                                     <% } %>
-                                <% } %>
+                                </option>
                             <% } %>
                         </select>
                         <label for="<%= model.optionList[0].constructor.name %>"><%= model.name %></label>

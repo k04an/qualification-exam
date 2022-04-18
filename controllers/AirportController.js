@@ -53,8 +53,9 @@ module.exports.details = async (req, res) => {
         belongsTo: [
             {
                 model: await airportFullModel.getCity({attributes: ['name']}),
-                optionList: await City.findAll(),
-                name: 'Город'
+                optionList: await City.findAll({attributes: ['id', 'name']}),
+                name: 'Город',
+                fieldsToShow: ['name']
             }
         ]
     })

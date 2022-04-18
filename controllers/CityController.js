@@ -62,7 +62,8 @@ module.exports.details = async (req, res) => {
             {
                 model: await cityFullModel.getCountry({attributes: ['name']}),
                 optionList: await Country.findAll(),
-                name: 'Страна'
+                name: 'Страна',
+                fieldsToShow: ['name']
             }
         ]
     })

@@ -59,12 +59,14 @@ module.exports.details = async (req, res) => {
             {
                 model: await employeeFullModel.getPosition({attributes: ['name']}),
                 optionList: await Position.findAll(),
-                name: 'Должность'
+                name: 'Должность',
+                fieldsToShow: ['name']
             },
             {
                 model: await employeeFullModel.getCrew({attributes: ['id']}),
                 optionList: await Crew.findAll(),
-                name: 'Экипаж'
+                name: 'Экипаж',
+                fieldsToShow: ['id']
             }
         ]
     })

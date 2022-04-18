@@ -58,13 +58,15 @@ module.exports.details = async (req, res) => {
         belongsTo: [
             {
                 model: await saleFullModel.getCustomer({attributes: ['lastname', 'firstname']}),
-                optionList: await Customer.findAll({attributes: ['lastname', 'firstname']}),
-                name: 'Клиент'
+                optionList: await Customer.findAll({attributes: ['id', 'lastname', 'firstname']}),
+                name: 'Клиент',
+                fieldsToShow: ['lastname', 'firstname']
             },
             {
                 model: await saleFullModel.getRoute({attributes: ['id']}),
                 optionList: await Route.findAll({attributes: ['id']}),
-                name: 'Номер маршрута'
+                name: 'Номер маршрута',
+                fieldsToShow: ['id']
             }
         ]
     })

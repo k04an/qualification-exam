@@ -76,31 +76,36 @@ module.exports.details = async (req, res) => {
         belongsTo: [
             {
                 model: await routeFullModel.getFromAirport({attributes: ['name']}),
-                optionList: await Airport.findAll({attributes: ['name']}),
+                optionList: await Airport.findAll({attributes: ['id', 'name']}),
                 name: 'Аэропорт отправления',
-                customFieldName: 'fromAirport'
+                customFieldName: 'fromAirport',
+                fieldsToShow: ['name']
             },
             {
                 model: await routeFullModel.getToAirport({attributes: ['name']}),
-                optionList: await Airport.findAll({attributes: ['name']}),
+                optionList: await Airport.findAll({attributes: ['id', 'name']}),
                 name: 'Аэропорт прибытия',
-                customFieldName: 'toAirport'
+                customFieldName: 'toAirport',
+                fieldsToShow: ['name']
             },
             {
                 model: await routeFullModel.getTransitAirport({attributes: ['name']}),
-                optionList: await Airport.findAll({attributes: ['name']}),
+                optionList: await Airport.findAll({attributes: ['id', 'name']}),
                 name: 'Аэропорт пересадки',
-                customFieldName: 'transitAirport'
+                customFieldName: 'transitAirport',
+                fieldsToShow: ['name']
             },
             {
                 model: await routeFullModel.getCrew({attributes: ['id']}),
                 optionList: await Crew.findAll({attributes: ['id']}),
-                name: 'Экипаж'
+                name: 'Экипаж',
+                fieldsToShow: ['id']
             },
             {
                 model: await routeFullModel.getPlane({attributes: ['id']}),
                 optionList: await Plane.findAll({attributes: ['id']}),
-                name: 'Самолет'
+                name: 'Самолет',
+                fieldsToShow: ['id']
             }
         ]
     })

@@ -54,7 +54,8 @@ module.exports.details = async (req, res) => {
             {
                 model: await planeFullModel.getPlaneModel({attributes: ['name']}),
                 optionList: await PlaneModel.findAll(),
-                name: 'Модель'
+                name: 'Модель',
+                fieldsToShow: ['name']
             }
         ]
     })
