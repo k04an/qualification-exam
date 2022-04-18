@@ -36,4 +36,10 @@ app.use('/route', RouteRouter)
 app.use('/customer', CustomerRouter)
 app.use('/sale', SaleRouter)
 
+app.get('/', (req, res) => {
+    res.render('home', {
+        pageTitle: 'Главная'
+    })
+})
+
 app.listen(process.env.PORT || 8080, () => console.log(`Web server is up on port ${process.env.PORT || 8080}`))

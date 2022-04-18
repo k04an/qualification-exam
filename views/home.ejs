@@ -1,0 +1,32 @@
+<%- include('./parts/header')%>
+
+<main class="container p-5">
+    <div class="row">
+        <div class="col">
+            <h2 class="text-center">Добро пожаловавть в электронную систему авиакомпании Amogus Airlines</h2>
+            <hr class="m-5">
+            <h5 class="text-center">Для продолжения выберите один из модулей системы, при помощи верхнего меню</h5>
+            <h5 class="text-center">Или воспользуйтесь быстром стартом</h5>
+            <hr class="m-5">
+            <h3 class="text-center">Быстрый старт</h3>
+            <div class="d-flex justify-content-evenly mt-5">
+                <a href="/customer" class="btn btn-warning d-flex align-items-center">
+                    <i class="bi bi-file-earmark-person-fill display-6 mx-2"></i>
+                    <span class="fs-2">Работа с клиентами</span>
+                </a>
+
+                <a href="/sale" class="btn btn-success d-flex align-items-center">
+                    <i class="bi bi-cash-stack display-6 mx-2"></i>
+                    <span class="fs-2">Регистрация продаж</span>
+                </a>
+
+                <a href="/route" class="btn btn-info d-flex align-items-center">
+                    <i class="bi bi-diagram-3 display-6 mx-2"></i>
+                    <span class="fs-2">Планировка маршрутов</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<%- include('./parts/footer')%>

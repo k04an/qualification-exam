@@ -6,8 +6,8 @@ module.exports.index = async (req, res) => {
     })
 
     res.render('index.ejs', {
-        pageTitle: 'Сотрудники',
-        tableTitle: 'Сотрудники',
+        pageTitle: 'Клиенты',
+        tableTitle: 'Клиенты',
         model: Customer,
         data: customers,
         propNames: ['Код', 'Фамилия', 'Имя', 'Отчество', 'Дата рождения', 'Номер телефона', 'Серия паспорта', 'Номер паспорта'],
